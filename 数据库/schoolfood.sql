@@ -1,12 +1,9 @@
--- 9.11日赵仲印
--- 添加了user_infor中的avatar字段，原来只在服务器上添加的goods里面的school_id也添加了，已经导入到服务器中
-
 -- phpMyAdmin SQL Dump
 -- version 4.6.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2016-09-11 16:17:41
+-- Generation Time: 2016-09-11 18:22:09
 -- 服务器版本： 10.1.17-MariaDB
 -- PHP Version: 7.0.10
 
@@ -22,8 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `schoolfood`
 --
-CREATE DATABASE IF NOT EXISTS `schoolfood` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `schoolfood`;
 
 -- --------------------------------------------------------
 
@@ -79,7 +74,7 @@ CREATE TABLE `comment` (
 
 CREATE TABLE `comment_image` (
   `ID` int(11) NOT NULL,
-  `goods_ID` int(11) NOT NULL DEFAULT '-1',
+  `comment_ID` int(11) NOT NULL DEFAULT '-1',
   `url` varchar(128) NOT NULL DEFAULT 'NULL'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -221,6 +216,13 @@ CREATE TABLE `token` (
   `token` varchar(128) NOT NULL DEFAULT 'NULL'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 转存表中的数据 `token`
+--
+
+INSERT INTO `token` (`user_ID`, `token`) VALUES
+(15, '9b717afbc5aeade349c0795440ad37b15b904a03');
+
 -- --------------------------------------------------------
 
 --
@@ -232,6 +234,13 @@ CREATE TABLE `user` (
   `name` varchar(20) NOT NULL DEFAULT 'NULL',
   `password` varchar(32) NOT NULL DEFAULT '000000'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `user`
+--
+
+INSERT INTO `user` (`ID`, `name`, `password`) VALUES
+(15, '12345678', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
@@ -249,6 +258,13 @@ CREATE TABLE `user_infor` (
   `birth` date NOT NULL,
   `avatar` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `user_infor`
+--
+
+INSERT INTO `user_infor` (`ID`, `name`, `sex`, `native`, `tel`, `email`, `birth`, `avatar`) VALUES
+(15, '12345678', 0, '', '', '', '0000-00-00', 'http://ocsyd0pft.bkt.clouddn.com/Fv-WyhVx1Ryw0btg8JTmblSJJgaV');
 
 --
 -- Indexes for dumped tables
@@ -280,7 +296,7 @@ ALTER TABLE `comment`
 --
 ALTER TABLE `comment_image`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `goods_ID` (`goods_ID`);
+  ADD KEY `goods_ID` (`comment_ID`);
 
 --
 -- Indexes for table `friend`
@@ -375,22 +391,22 @@ ALTER TABLE `admin`
 -- 使用表AUTO_INCREMENT `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- 使用表AUTO_INCREMENT `comment_image`
 --
 ALTER TABLE `comment_image`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- 使用表AUTO_INCREMENT `goods`
 --
 ALTER TABLE `goods`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 --
 -- 使用表AUTO_INCREMENT `goods_image`
 --
 ALTER TABLE `goods_image`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- 使用表AUTO_INCREMENT `record`
 --
@@ -415,7 +431,7 @@ ALTER TABLE `tag`
 -- 使用表AUTO_INCREMENT `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- 限制导出的表
 --
@@ -438,7 +454,7 @@ ALTER TABLE `comment`
 -- 限制表 `comment_image`
 --
 ALTER TABLE `comment_image`
-  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`);
+  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`);
 
 --
 -- 限制表 `friend`
@@ -502,6 +518,3 @@ ALTER TABLE `user_infor`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-
