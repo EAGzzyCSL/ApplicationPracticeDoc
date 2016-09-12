@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2016-09-11 18:22:09
+-- Generation Time: 2016-09-12 18:07:42
 -- 服务器版本： 10.1.17-MariaDB
 -- PHP Version: 7.0.10
 
@@ -63,7 +63,8 @@ CREATE TABLE `comment` (
   `goods_ID` int(11) NOT NULL,
   `content` varchar(255) NOT NULL DEFAULT 'NULL',
   `rate` float(2,1) NOT NULL DEFAULT '0.0',
-  `time` datetime(6) NOT NULL
+  `time` datetime NOT NULL,
+  `like_num` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -104,6 +105,20 @@ CREATE TABLE `goods` (
   `rate` float(2,1) NOT NULL DEFAULT '0.0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 转存表中的数据 `goods`
+--
+
+INSERT INTO `goods` (`ID`, `name`, `price`, `shop_ID`, `school_ID`, `rate`) VALUES
+(1, 'qweqwr', 12.00, 25, 8, 0.0),
+(2, '馒头', 1.00, 26, 11, 0.0),
+(3, '窝头', 1.00, 26, 11, 0.0),
+(4, '土豆丝', 5.00, 26, 11, 0.0),
+(5, '麻婆豆腐', 10.00, 27, 8, 0.0),
+(6, '美味鸡腿', 5.00, 27, 8, 0.0),
+(7, '酱牛肉', 20.00, 27, 8, 0.0),
+(8, '大虾', 20.00, 27, 8, 0.0);
+
 -- --------------------------------------------------------
 
 --
@@ -115,6 +130,21 @@ CREATE TABLE `goods_image` (
   `goods_ID` int(11) NOT NULL DEFAULT '-1',
   `url` varchar(128) NOT NULL DEFAULT 'NULL'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `goods_image`
+--
+
+INSERT INTO `goods_image` (`ID`, `goods_ID`, `url`) VALUES
+(1, 1, 'http://ocsyd0pft.bkt.clouddn.com/FukTaeWt-eo8EttJgAmvXMk9qBJT'),
+(2, 1, 'http://ocsyd0pft.bkt.clouddn.com/FgOqDOZjFLWj4ULLG0WBBuZ7e9V0'),
+(3, 2, 'http://ocsyd0pft.bkt.clouddn.com/Fs_SXVmfWkrpJT_dk4wruwvDf-IL'),
+(4, 3, 'http://ocsyd0pft.bkt.clouddn.com/FsKrXJWpj7TjBEOK9SFPMCYgFn3a'),
+(5, 4, 'http://ocsyd0pft.bkt.clouddn.com/Frqa5MpNXVPTSL1Fpqv3_VDrENJH'),
+(6, 5, 'http://ocsyd0pft.bkt.clouddn.com/FnQYNDkK__IebkxRovTwpHCvG5rK'),
+(7, 6, 'http://ocsyd0pft.bkt.clouddn.com/FtzI-vn_C7JuOEW889T-a-cqzeMc'),
+(8, 7, 'http://ocsyd0pft.bkt.clouddn.com/FnJiu5dJ9z8G295XZNeudTH0OObN'),
+(9, 8, 'http://ocsyd0pft.bkt.clouddn.com/FihOMxL98ZCQPnAuoGbmewJIGGJj');
 
 -- --------------------------------------------------------
 
@@ -170,7 +200,8 @@ CREATE TABLE `school` (
 INSERT INTO `school` (`ID`, `name`) VALUES
 (8, '北京理工大学（中关村）'),
 (9, '北京理工大学(良乡)'),
-(10, '北京外国语大学');
+(10, '北京外国语大学'),
+(11, '复旦大学');
 
 -- --------------------------------------------------------
 
@@ -192,7 +223,12 @@ CREATE TABLE `shop` (
 --
 
 INSERT INTO `shop` (`ID`, `name`, `address`, `image`, `school_ID`, `rate`) VALUES
-(25, '第二食堂', '食堂路上', 'http://ocsyd0pft.bkt.clouddn.com/FtOuyRtntvgCMBWRvzfK5qDHd1WM', 8, 0.0);
+(25, '第二食堂', '食堂路上', 'http://ocsyd0pft.bkt.clouddn.com/FtOuyRtntvgCMBWRvzfK5qDHd1WM', 8, 0.0),
+(26, '旦苑', '相辉堂对面', 'http://ocsyd0pft.bkt.clouddn.com/FosngSp774IaFjgf8jfFPltnJZ8H', 11, 0.0),
+(27, '第三食堂', '食堂路上', 'http://ocsyd0pft.bkt.clouddn.com/FuEs0WsyodAzDOQqNmPOkXmkPDCW', 8, 0.0),
+(28, '第七食堂', '金榜缘上头', 'http://ocsyd0pft.bkt.clouddn.com/FkT7LaDEh2-0Nm0tm0lB3xNtlSSt', 8, 0.0),
+(29, '清真餐厅', '食堂路上', 'http://ocsyd0pft.bkt.clouddn.com/FuBhtvbN2GFyuEqPytV0PoONequM', 8, 0.0),
+(30, '教工食堂', '食堂路上', 'http://ocsyd0pft.bkt.clouddn.com/FopcjHaHi6W66L17IoF5La_hWP88', 8, 0.0);
 
 -- --------------------------------------------------------
 
@@ -216,13 +252,6 @@ CREATE TABLE `token` (
   `token` varchar(128) NOT NULL DEFAULT 'NULL'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- 转存表中的数据 `token`
---
-
-INSERT INTO `token` (`user_ID`, `token`) VALUES
-(15, '9b717afbc5aeade349c0795440ad37b15b904a03');
-
 -- --------------------------------------------------------
 
 --
@@ -234,13 +263,6 @@ CREATE TABLE `user` (
   `name` varchar(20) NOT NULL DEFAULT 'NULL',
   `password` varchar(32) NOT NULL DEFAULT '000000'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- 转存表中的数据 `user`
---
-
-INSERT INTO `user` (`ID`, `name`, `password`) VALUES
-(15, '12345678', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
@@ -258,13 +280,6 @@ CREATE TABLE `user_infor` (
   `birth` date NOT NULL,
   `avatar` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- 转存表中的数据 `user_infor`
---
-
-INSERT INTO `user_infor` (`ID`, `name`, `sex`, `native`, `tel`, `email`, `birth`, `avatar`) VALUES
-(15, '12345678', 0, '', '', '', '0000-00-00', 'http://ocsyd0pft.bkt.clouddn.com/Fv-WyhVx1Ryw0btg8JTmblSJJgaV');
 
 --
 -- Indexes for dumped tables
@@ -391,42 +406,42 @@ ALTER TABLE `admin`
 -- 使用表AUTO_INCREMENT `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- 使用表AUTO_INCREMENT `comment_image`
 --
 ALTER TABLE `comment_image`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- 使用表AUTO_INCREMENT `goods`
 --
 ALTER TABLE `goods`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- 使用表AUTO_INCREMENT `goods_image`
 --
 ALTER TABLE `goods_image`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- 使用表AUTO_INCREMENT `record`
 --
 ALTER TABLE `record`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- 使用表AUTO_INCREMENT `school`
 --
 ALTER TABLE `school`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- 使用表AUTO_INCREMENT `shop`
 --
 ALTER TABLE `shop`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- 使用表AUTO_INCREMENT `tag`
 --
 ALTER TABLE `tag`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- 使用表AUTO_INCREMENT `user`
 --
@@ -440,80 +455,80 @@ ALTER TABLE `user`
 -- 限制表 `collection`
 --
 ALTER TABLE `collection`
-  ADD CONSTRAINT `collection_ibfk_1` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`),
-  ADD CONSTRAINT `collection_ibfk_2` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `collection_ibfk_1` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `collection_ibfk_2` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `comment`
 --
 ALTER TABLE `comment`
-  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`),
-  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`);
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `comment_image`
 --
 ALTER TABLE `comment_image`
-  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`);
+  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `friend`
 --
 ALTER TABLE `friend`
-  ADD CONSTRAINT `friend_ibfk_1` FOREIGN KEY (`follow_ER`) REFERENCES `user` (`ID`),
-  ADD CONSTRAINT `friend_ibfk_2` FOREIGN KEY (`follow_EE`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `friend_ibfk_1` FOREIGN KEY (`follow_ER`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `friend_ibfk_2` FOREIGN KEY (`follow_EE`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `goods`
 --
 ALTER TABLE `goods`
-  ADD CONSTRAINT `goods_ibfk_1` FOREIGN KEY (`shop_ID`) REFERENCES `shop` (`ID`),
-  ADD CONSTRAINT `goods_ibfk_2` FOREIGN KEY (`shop_ID`) REFERENCES `shop` (`ID`),
-  ADD CONSTRAINT `goods_ibfk_3` FOREIGN KEY (`school_ID`) REFERENCES `school` (`ID`);
+  ADD CONSTRAINT `goods_ibfk_1` FOREIGN KEY (`shop_ID`) REFERENCES `shop` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `goods_ibfk_2` FOREIGN KEY (`shop_ID`) REFERENCES `shop` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `goods_ibfk_3` FOREIGN KEY (`school_ID`) REFERENCES `school` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `goods_image`
 --
 ALTER TABLE `goods_image`
-  ADD CONSTRAINT `goods_image_ibfk_1` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`);
+  ADD CONSTRAINT `goods_image_ibfk_1` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `goods_tag`
 --
 ALTER TABLE `goods_tag`
-  ADD CONSTRAINT `goods_tag_ibfk_1` FOREIGN KEY (`tag_ID`) REFERENCES `tag` (`ID`),
-  ADD CONSTRAINT `goods_tag_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`);
+  ADD CONSTRAINT `goods_tag_ibfk_1` FOREIGN KEY (`tag_ID`) REFERENCES `tag` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `goods_tag_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `praise`
 --
 ALTER TABLE `praise`
-  ADD CONSTRAINT `praise_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`),
-  ADD CONSTRAINT `praise_ibfk_2` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`);
+  ADD CONSTRAINT `praise_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `praise_ibfk_2` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `record`
 --
 ALTER TABLE `record`
-  ADD CONSTRAINT `record_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `record_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `shop`
 --
 ALTER TABLE `shop`
-  ADD CONSTRAINT `shop_ibfk_1` FOREIGN KEY (`school_ID`) REFERENCES `school` (`ID`);
+  ADD CONSTRAINT `shop_ibfk_1` FOREIGN KEY (`school_ID`) REFERENCES `school` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `token`
 --
 ALTER TABLE `token`
-  ADD CONSTRAINT `token_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `token_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `user_infor`
 --
 ALTER TABLE `user_infor`
-  ADD CONSTRAINT `user_infor_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `user` (`ID`);
+  ADD CONSTRAINT `user_infor_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
