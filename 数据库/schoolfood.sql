@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.4
--- https://www.phpmyadmin.net/
+-- version 4.5.5.1
+-- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: 2016-09-12 18:07:42
--- 服务器版本： 10.1.17-MariaDB
--- PHP Version: 7.0.10
+-- Host: 127.0.0.1
+-- Generation Time: 2016-09-14 03:58:05
+-- 服务器版本： 5.6.28
+-- PHP Version: 5.6.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -54,22 +54,6 @@ CREATE TABLE `collection` (
 -- --------------------------------------------------------
 
 --
--- 表的结构 `comment`
---
-
-CREATE TABLE `comment` (
-  `ID` int(11) NOT NULL,
-  `user_ID` int(11) NOT NULL DEFAULT '-1',
-  `goods_ID` int(11) NOT NULL,
-  `content` varchar(255) NOT NULL DEFAULT 'NULL',
-  `rate` float(2,1) NOT NULL DEFAULT '0.0',
-  `time` datetime NOT NULL,
-  `like_num` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- 表的结构 `comment_image`
 --
 
@@ -111,9 +95,9 @@ CREATE TABLE `goods` (
 
 INSERT INTO `goods` (`ID`, `name`, `price`, `shop_ID`, `school_ID`, `rate`) VALUES
 (1, 'qweqwr', 12.00, 25, 8, 0.0),
-(2, '馒头', 1.00, 26, 11, 0.0),
+(2, '馒头', 1.00, 26, 11, 3.0),
 (3, '窝头', 1.00, 26, 11, 0.0),
-(4, '土豆丝', 5.00, 26, 11, 0.0),
+(4, '土豆丝', 5.00, 26, 11, 4.5),
 (5, '麻婆豆腐', 10.00, 27, 8, 0.0),
 (6, '美味鸡腿', 5.00, 27, 8, 0.0),
 (7, '酱牛肉', 20.00, 27, 8, 0.0),
@@ -156,6 +140,38 @@ CREATE TABLE `goods_tag` (
   `goods_ID` int(11) NOT NULL DEFAULT '-1',
   `tag_ID` int(11) NOT NULL DEFAULT '-1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `pinglun`
+--
+
+CREATE TABLE `pinglun` (
+  `ID` int(11) NOT NULL,
+  `user_ID` int(11) NOT NULL DEFAULT '-1',
+  `goods_ID` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL DEFAULT 'NULL',
+  `rate` float(2,1) NOT NULL DEFAULT '0.0',
+  `time` datetime NOT NULL,
+  `like_num` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `pinglun`
+--
+
+INSERT INTO `pinglun` (`ID`, `user_ID`, `goods_ID`, `content`, `rate`, `time`, `like_num`) VALUES
+(19, 16, 4, '999', 4.5, '2016-09-14 11:00:00', 11),
+(22, 16, 2, '999', 3.0, '2016-09-14 07:00:00', 8);
+
+--
+-- 触发器 `pinglun`
+--
+DELIMITER $$
+CREATE TRIGGER `tri_rate` AFTER INSERT ON `pinglun` FOR EACH ROW UPDATE goods SET goods.rate=(SELECT AVG(rate) FROM pinglun WHERE goods_ID=goods.ID)
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -264,6 +280,13 @@ CREATE TABLE `user` (
   `password` varchar(32) NOT NULL DEFAULT '000000'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- 转存表中的数据 `user`
+--
+
+INSERT INTO `user` (`ID`, `name`, `password`) VALUES
+(16, 'zhuge', '555555');
+
 -- --------------------------------------------------------
 
 --
@@ -296,14 +319,6 @@ ALTER TABLE `admin`
 --
 ALTER TABLE `collection`
   ADD PRIMARY KEY (`user_ID`,`goods_ID`),
-  ADD KEY `goods_ID` (`goods_ID`);
-
---
--- Indexes for table `comment`
---
-ALTER TABLE `comment`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `user_ID` (`user_ID`),
   ADD KEY `goods_ID` (`goods_ID`);
 
 --
@@ -341,6 +356,14 @@ ALTER TABLE `goods_image`
 ALTER TABLE `goods_tag`
   ADD PRIMARY KEY (`goods_ID`,`tag_ID`),
   ADD KEY `tag_ID` (`tag_ID`);
+
+--
+-- Indexes for table `pinglun`
+--
+ALTER TABLE `pinglun`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `user_ID` (`user_ID`),
+  ADD KEY `goods_ID` (`goods_ID`);
 
 --
 -- Indexes for table `praise`
@@ -403,11 +426,6 @@ ALTER TABLE `user_infor`
 ALTER TABLE `admin`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
--- 使用表AUTO_INCREMENT `comment`
---
-ALTER TABLE `comment`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
---
 -- 使用表AUTO_INCREMENT `comment_image`
 --
 ALTER TABLE `comment_image`
@@ -422,6 +440,11 @@ ALTER TABLE `goods`
 --
 ALTER TABLE `goods_image`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- 使用表AUTO_INCREMENT `pinglun`
+--
+ALTER TABLE `pinglun`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- 使用表AUTO_INCREMENT `record`
 --
@@ -446,7 +469,7 @@ ALTER TABLE `tag`
 -- 使用表AUTO_INCREMENT `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- 限制导出的表
 --
@@ -459,17 +482,10 @@ ALTER TABLE `collection`
   ADD CONSTRAINT `collection_ibfk_2` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- 限制表 `comment`
---
-ALTER TABLE `comment`
-  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- 限制表 `comment_image`
 --
 ALTER TABLE `comment_image`
-  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `comment_image_ibfk_1` FOREIGN KEY (`comment_ID`) REFERENCES `pinglun` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `friend`
@@ -500,11 +516,18 @@ ALTER TABLE `goods_tag`
   ADD CONSTRAINT `goods_tag_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- 限制表 `pinglun`
+--
+ALTER TABLE `pinglun`
+  ADD CONSTRAINT `pinglun_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pinglun_ibfk_2` FOREIGN KEY (`goods_ID`) REFERENCES `goods` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- 限制表 `praise`
 --
 ALTER TABLE `praise`
   ADD CONSTRAINT `praise_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `praise_ibfk_2` FOREIGN KEY (`comment_ID`) REFERENCES `comment` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `praise_ibfk_2` FOREIGN KEY (`comment_ID`) REFERENCES `pinglun` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 限制表 `record`
