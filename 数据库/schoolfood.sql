@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-09-14 03:58:05
+-- Generation Time: 2016-09-15 05:03:34
 -- 服务器版本： 5.6.28
 -- PHP Version: 5.6.19
 
@@ -19,6 +19,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `schoolfood`
 --
+
+DELIMITER $$
+--
+-- 存储过程
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `t1` (IN `maxprice` DOUBLE, OUT `lprice` DOUBLE)  BEGIN
+	SELECT name,price
+FROM goods
+WHERE goods.price < maxprice ;
+SET lprice=(SELECT MAX(price) FROM goods
+         WHERE goods.price<maxprice);
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
