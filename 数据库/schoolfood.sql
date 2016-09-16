@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-09-15 05:03:34
--- 服务器版本： 5.6.28
+-- Generation Time: 2016-09-16 09:35:38
+-- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -109,13 +109,21 @@ CREATE TABLE `goods` (
 
 INSERT INTO `goods` (`ID`, `name`, `price`, `shop_ID`, `school_ID`, `rate`) VALUES
 (1, 'qweqwr', 12.00, 25, 8, 0.0),
-(2, '馒头', 1.00, 26, 11, 3.0),
+(2, '馒头', 1.00, 26, 11, 0.0),
 (3, '窝头', 1.00, 26, 11, 0.0),
-(4, '土豆丝', 5.00, 26, 11, 4.5),
+(4, '土豆丝', 5.00, 26, 11, 0.0),
 (5, '麻婆豆腐', 10.00, 27, 8, 0.0),
 (6, '美味鸡腿', 5.00, 27, 8, 0.0),
 (7, '酱牛肉', 20.00, 27, 8, 0.0),
 (8, '大虾', 20.00, 27, 8, 0.0);
+
+--
+-- 触发器 `goods`
+--
+DELIMITER $$
+CREATE TRIGGER `tri_rate2` AFTER UPDATE ON `goods` FOR EACH ROW UPDATE shop SET shop.rate=(SELECT AVG(rate) FROM goods WHERE shop_ID=shop.ID)
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -170,14 +178,6 @@ CREATE TABLE `pinglun` (
   `time` datetime NOT NULL,
   `like_num` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- 转存表中的数据 `pinglun`
---
-
-INSERT INTO `pinglun` (`ID`, `user_ID`, `goods_ID`, `content`, `rate`, `time`, `like_num`) VALUES
-(19, 16, 4, '999', 4.5, '2016-09-14 11:00:00', 11),
-(22, 16, 2, '999', 3.0, '2016-09-14 07:00:00', 8);
 
 --
 -- 触发器 `pinglun`
@@ -458,7 +458,7 @@ ALTER TABLE `goods_image`
 -- 使用表AUTO_INCREMENT `pinglun`
 --
 ALTER TABLE `pinglun`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 --
 -- 使用表AUTO_INCREMENT `record`
 --
