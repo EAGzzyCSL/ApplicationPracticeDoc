@@ -1,0 +1,25 @@
+-- 创建存储过程 --
+-- 复制以下代码执行即可创建存储过程，ps：存储过程创建一次即可，无需也不应该重复创建 --
+-- 如果存储过程存在则删除之，测试的时候为了方便，实际使用中保留也无妨
+DROP PROCEDURE IF EXISTS GetStarsOfShop; 
+-- DELIMITER的作用是将mysql的结束符设置为～（或其他特殊符号），避免在存储过程内和mysql的默认结束符号冲突
+DELIMITER ~
+CREATE PROCEDURE GetStarsOfShop(IN shopId INT)
+BEGIN
+  set @s0=(SELECT count(*) FROM `goods` WHERE `rate`>=0 && `rate`<1 && `shop_ID`=shopId);
+  set @s1=(SELECT count(*) FROM `goods` WHERE `rate`>=1 && `rate`<2 && `shop_ID`=shopId);
+  set @s2=(SELECT count(*) FROM `goods` WHERE `rate`>=2 && `rate`<3 && `shop_ID`=shopId);
+  set @s3=(SELECT count(*) FROM `goods` WHERE `rate`>=3 && `rate`<4 && `shop_ID`=shopId);
+  set @s4=(SELECT count(*) FROM `goods` WHERE `rate`>=4 && `rate`<5 && `shop_ID`=shopId);
+  set @s5=(SELECT count(*) FROM `goods` WHERE `rate`=5 && `ID`=shopId);
+  select @s0,@s1,@s2,@s3,@s4,@s5;
+  
+END~
+DELIMITER ;
+-- 存储过程完了再改回来
+-- 创建存储过程结束 --
+-- 代码复制结束 --
+-- 以下为使用示范，不应该作为创建村错过程的部分
+-- 示例：传入商店id返回各个星级的菜的数量
+CALL GetStarsOfShop(3); 
+
